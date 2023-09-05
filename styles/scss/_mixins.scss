@@ -1,0 +1,43 @@
+@mixin overall {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: $primaryFont;
+}
+@mixin textStyle($size, $weigh, $lineHeight, $color) {
+  font-size: $size;
+  font-weight: $weigh;
+  line-height: $lineHeight;
+  color: $color;
+  @content;
+}
+@mixin media($size) {
+  @if ($size == SM) {
+    @media (min-width: 640px) {
+      @content;
+    }
+  } @else if ($size == MD) {
+    @media (min-width: 768px) {
+      @content;
+    }
+  } @else if ($size == LG) {
+    @media (min-width: 1024px) {
+      @content;
+    }
+  } @else if ($size == XL) {
+    @media (min-width: 1280px) {
+      @content;
+    }
+  } @else if ($size == 2XL) {
+    @media (min-width: 1536px) {
+      @content;
+    }
+  }
+}
+@mixin flex($alignItems, $justifyContent, $direction) {
+  display: flex;
+  align-items: $alignItems;
+  justify-content: $justifyContent;
+  flex-direction: $direction;
+  @content;
+}
