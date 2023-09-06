@@ -41,7 +41,7 @@ svg {
 .custom-select {
   position: relative;
   width: 20rem;
-  z-index: 998;
+  z-index: 997;
 }
 
 .custom-select select {
@@ -393,6 +393,7 @@ svg {
   height: 10000px;
   background-color: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(2px);
+  z-index: 998;
 }
 
 .cart {
