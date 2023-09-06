@@ -38,32 +38,24 @@ svg {
   position: relative;
   width: 20rem;
   z-index: 997;
-}
-.custom-select select {
-  display: none;
-}
-.select-selected {
-  @include flex(center, flex-start, row);
-  border-radius: $primaryRadius;
-  border: 2px solid $primaryColorLight200;
-  height: 4rem;
-  padding: 0 1rem;
-  background-color: $neutralColorWhite;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-}
-.select-items div,
-.select-selected {
-  @include textStyle($fontSizeSM, 700, 180%, $neutralColorBlack);
-  border-radius: $primaryRadius;
-  user-select: none;
-  cursor: pointer;
-}
-.select-items div {
-  @include flex(center, flex-start, row);
-  padding-left: 1rem;
-  width: 100%;
-  height: 3rem;
-  background-color: $primaryColorLight100;
+  .select {
+    display: none;
+  }
+  .select-selected {
+    @include flex(center, flex-start, row);
+    @include textStyle($fontSizeSM, 700, 180%, $neutralColorBlack);
+    border-radius: $primaryRadius;
+    border: 2px solid $primaryColorLight200;
+    height: 4rem;
+    padding: 0 1rem;
+    background-color: $neutralColorWhite;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    user-select: none;
+    cursor: pointer;
+  }
+  .select-hide {
+    display: none;
+  }
 }
 .select-items {
   @include flex(flex-start, center, column) {
@@ -80,13 +72,23 @@ svg {
   width: 20rem;
   background-color: $neutralColorWhite;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-}
-.select-hide {
-  display: none;
-}
-.select-items div:hover,
-.same-as-selected {
-  background-color: $primaryColorLight200;
+  div {
+    @include flex(center, flex-start, row);
+    @include textStyle($fontSizeSM, 700, 180%, $neutralColorBlack);
+    border-radius: $primaryRadius;
+    padding-left: 1rem;
+    width: 100%;
+    height: 3rem;
+    background-color: $primaryColorLight100;
+    user-select: none;
+    cursor: pointer;
+    &:hover {
+      background-color: $primaryColorLight200;
+    }
+  }
+  .same-as-selected {
+    background-color: $primaryColorLight200;
+  }
 }
 //* Custom Select End
 //* Loader Start
@@ -368,6 +370,7 @@ svg {
   background-color: $neutralColorWhite;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   z-index: 999;
+  user-select: none;
 }
 .cart__header {
   width: 100%;
@@ -407,7 +410,7 @@ svg {
 }
 .cart__item-center {
   @include flex(center, space-between, row) {
-    gap: .5rem;
+    gap: 0.5rem;
     flex: 1;
   }
   height: 100%;
