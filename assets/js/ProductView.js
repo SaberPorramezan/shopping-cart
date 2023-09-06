@@ -69,6 +69,7 @@ class ProductView {
       btn.addEventListener("click", (e) => {
         console.log();
         if (Storage.getCarts().length < 5) {
+          CartView.cartWrapper.classList.remove("hide-loading");
           e.target.innerText = "In Cart";
           e.target.disabled = true;
           const res = cardPrice

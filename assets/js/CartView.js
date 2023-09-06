@@ -35,11 +35,17 @@ class CartView {
     this.cartItemsCount.innerText = tempCartItems;
   }
   showCartLoading() {
-    if (Storage.getCarts().length) {
-      for (let i = 0; i < 3; i++) {
-        this.cartItems.append(this.cartItemTemplate.content.cloneNode(true));
+    const isCart = Storage.getCarts().length;
+    if (isCart) {
+      if (!this.cartWrapper.classList.contains("hide-loading")) {
+        for (let i = 0; i < isCart; i++) {
+          this.cartItems.append(this.cartItemTemplate.content.cloneNode(true));
+        }
+        this.cartWrapper.classList.add("hide-loading");
+        Api.getCartItems();
+      } else {
+        Api.getCartItems();
       }
-      Api.getCartItems();
     }
   }
   showCartItems(cart) {
@@ -80,7 +86,7 @@ class CartView {
         } else if (cic.classList.contains("down")) {
           const res = cart.find((c) => c.id == cic.dataset.id);
           if (res.quantity === 1) {
-            this.showCartLoading();
+            Api.getCartItems();
             ProductView.updateProductBtn(res.id);
             Storage.removeFromCart(res.id);
             this.updateCartCount();
@@ -100,7 +106,7 @@ class CartView {
             this.updateCartCount();
           }
         } else if (cic.classList.contains("delete")) {
-          this.showCartLoading();
+          Api.getCartItems();
           ProductView.updateProductBtn(res.id);
           Storage.removeFromCart(res.id);
           this.updateCartCount();

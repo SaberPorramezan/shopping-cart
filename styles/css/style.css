@@ -594,7 +594,7 @@ svg {
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 @media (min-width: 640px) {

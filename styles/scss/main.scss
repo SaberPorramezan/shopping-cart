@@ -503,7 +503,7 @@ svg {
   }
   .cart__footer-btns {
     @include flex(center, space-between, row) {
-      gap: 1.5rem;
+      gap: 1rem;
     }
   }
 }
