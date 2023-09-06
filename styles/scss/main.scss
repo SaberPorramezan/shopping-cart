@@ -37,6 +37,7 @@ svg {
 .custom-select {
   position: relative;
   width: 20rem;
+  z-index: 998;
 }
 .custom-select select {
   display: none;
@@ -79,7 +80,6 @@ svg {
   width: 20rem;
   background-color: $neutralColorWhite;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-  z-index: 999;
 }
 .select-hide {
   display: none;
@@ -366,6 +366,7 @@ svg {
   max-width: 60rem;
   background-color: $neutralColorWhite;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  z-index: 999;
 }
 .cart__header {
   width: 100%;
@@ -405,7 +406,7 @@ svg {
 }
 .cart__item-center {
   @include flex(center, space-between, row) {
-    gap: 1rem;
+    gap: .5rem;
     flex: 1;
   }
   height: 100%;
@@ -414,7 +415,6 @@ svg {
       gap: 1rem;
     }
     width: 100%;
-    overflow: hidden;
     .cart__item-title {
       width: 100%;
       @include textStyle($fontSizeSM, 500, 180%, $neutralColorBlack);
@@ -432,8 +432,8 @@ svg {
   .cart__item-controller {
     @include flex(center, center, row);
     border-radius: 50%;
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     cursor: pointer;
     .icon {
       width: 2.8rem;
@@ -476,8 +476,8 @@ svg {
 .cart__item-right {
   @include flex(center, center, row);
   border-radius: 50%;
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   cursor: pointer;
   .icon {
     width: 2.4rem;
@@ -526,6 +526,7 @@ svg {
     }
   }
   .cart__item-center {
+    gap: 1rem;
     .cart__item-desc {
       gap: 1.5rem;
       .cart__item-title {
