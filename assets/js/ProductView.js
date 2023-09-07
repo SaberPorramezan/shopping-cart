@@ -27,7 +27,7 @@ class ProductView {
       div.querySelector(".card__title").textContent = p.title;
       div.querySelector(
         ".card__header"
-      ).innerHTML = ` <img src="${p.image}"class="card__img" />`;
+      ).innerHTML = ` <img src="${p.image}"class="card__img" loading="lazy" />`;
       div.querySelector(".rating").innerHTML = `<svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

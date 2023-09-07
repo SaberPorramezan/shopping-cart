@@ -56,7 +56,7 @@ class CartView {
       const div = this.cartItemTemplate.content.cloneNode(true);
       div.querySelector(
         ".cart__item-left"
-      ).innerHTML = `<img src="${res.image}" class="cart__item-img" />`;
+      ).innerHTML = `<img src="${res.image}" class="cart__item-img" loading="lazy" />`;
       div.querySelector(".cart__item-title").textContent = res.title;
       div.querySelector(".cart__item-price").textContent = `$ ${res.price}`;
       div.querySelector(".cart__item-count").textContent = c.quantity;
