@@ -5,7 +5,6 @@ class CategoryView {
   constructor() {
     this.category = document.querySelector(".category");
     this.categoryTemplate = document.getElementById("category-template");
-
     this.filteredDataForSearch = [];
   }
   showCategoriesLoading() {
@@ -32,40 +31,18 @@ class CategoryView {
             const filtered = ProductView.productsData.filter(
               (p) => p.category === btn.textContent
             );
-            for (const iterator of filtered) {
-              filteredData.push(iterator);
+            for (const item of filtered) {
+              filteredData.push(item);
             }
           }
         });
         const sameAsSelected = document.querySelector(".same-as-selected");
-        if (sameAsSelected) {
+        if (sameAsSelected)
           SortProducts.sortProducts(filteredData, sameAsSelected.textContent);
-        }
         this.filteredDataForSearch = filteredData;
-        if (filteredData.length) {
-          ProductView.showProducts(filteredData);
-        } else {
-          ProductView.showProducts(ProductView.productsData);
-        }
-
-        // btn.classList.toggle("active");
-        // let filteredData = [];
-        // [...document.querySelectorAll(".category-btn")].forEach((btn) => {
-        //   if (btn.classList.contains("active")) {
-        //     const filtered = ProductView.productsData.filter(
-        //       (p) => p.category === btn.textContent
-        //     );
-        //     for (const iterator of filtered) {
-        //       filteredData.push(iterator);
-        //     }
-        //   }
-        // });
-        // this.filteredDataForSearch = filteredData;
-        // if (filteredData.length) {
-        //   ProductView.showProducts(filteredData);
-        // } else {
-        //   ProductView.showProducts(ProductView.productsData);
-        // }
+        filteredData.length
+          ? ProductView.showProducts(filteredData)
+          : ProductView.showProducts(ProductView.productsData);
       })
     );
   }

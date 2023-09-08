@@ -8,12 +8,11 @@ class ProductView {
     this.cardTemplate = document.getElementById("card-template");
     this.searchInput = document.getElementById("search");
     this.notFound = document.querySelector(".not-found");
-
     this.productsData = [];
-
-    this.searchInput.addEventListener("input", (e) => {
-      this.searchProducts(e.target.value);
-    });
+    this.cartLimit = 5;
+    this.searchInput.addEventListener("input", (e) =>
+      this.searchProducts(e.target.value)
+    );
   }
   showProductsLoading() {
     for (let i = 0; i < 10; i++) {
@@ -59,31 +58,29 @@ class ProductView {
     this.addToCart();
   }
   addToCart() {
-    const addToCartBtn = document.querySelectorAll(".add-to-cart-btn");
-    const cardPrice = [...document.querySelectorAll(".card__price")];
-    addToCartBtn.forEach((btn) => {
+    document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
       if (Storage.getProduct(btn.dataset.id)) {
         btn.innerText = "In Cart";
         btn.disabled = true;
       }
       btn.addEventListener("click", (e) => {
-        console.log();
-        if (Storage.getCarts().length < 5) {
+        if (Storage.getCarts().length < this.cartLimit) {
           CartView.cartWrapper.classList.remove("hide-loading");
           e.target.innerText = "In Cart";
           e.target.disabled = true;
-          const res = cardPrice
-            .find((cp) => e.target.dataset.id === cp.dataset.id)
+          const price = e.target.parentNode.parentNode
+            .querySelector(".card__price")
             .textContent.split(" ")[1];
           Storage.saveCarts([
             ...Storage.getCarts(),
             {
               id: e.target.dataset.id,
-              price: res,
+              price,
               quantity: 1,
             },
           ]);
           CartView.updateCartCount();
+          // Show Toast
           Toastify({
             text: "Added to cart",
             className: "success",
@@ -92,7 +89,7 @@ class ProductView {
           }).showToast();
         } else {
           Toastify({
-            text: `You have ${Storage.getCarts().length} uncompleted orders`,
+            text: `You have ${this.cartLimit} uncompleted orders`,
             className: "info",
             gravity: "top",
             position: "center",
@@ -102,8 +99,7 @@ class ProductView {
     });
   }
   updateProductBtn(id) {
-    const addToCartBtn = document.querySelectorAll(".add-to-cart-btn");
-    addToCartBtn.forEach((btn) => {
+    document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
       if (btn.dataset.id === id) {
         btn.innerText = "Add To Cart";
         btn.disabled = false;
@@ -111,31 +107,16 @@ class ProductView {
     });
   }
   searchProducts(value) {
-    if (CategoryView.filteredDataForSearch.length) {
-      const res = CategoryView.filteredDataForSearch.filter((p) =>
-        p.title.toLowerCase().includes(value.toLowerCase())
-      );
-      if (res.length) {
-        this.notFound.classList.add("hide");
-        this.cards.classList.remove("hide");
-        this.showProducts(res);
-      } else {
-        this.notFound.classList.remove("hide");
-        this.cards.classList.add("hide");
-      }
-    } else {
-      const res = this.productsData.filter((p) =>
-        p.title.toLowerCase().includes(value.toLowerCase())
-      );
-      if (res.length) {
-        this.notFound.classList.add("hide");
-        this.cards.classList.remove("hide");
-        this.showProducts(res);
-      } else {
-        this.notFound.classList.remove("hide");
-        this.cards.classList.add("hide");
-      }
-    }
+    let searchData = this.productsData;
+    if (CategoryView.filteredDataForSearch.length)
+      searchData = CategoryView.filteredDataForSearch;
+    const searchResults = searchData.filter((p) =>
+      p.title.toLowerCase().includes(value.toLowerCase())
+    );
+    searchResults.length
+      ? this.notFound.classList.add("hide")
+      : this.notFound.classList.remove("hide");
+    this.showProducts(searchResults);
   }
 }
 

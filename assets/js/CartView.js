@@ -20,14 +20,11 @@ class CartView {
       this.showCart();
       this.showCartLoading();
     });
-    this.backdrop.addEventListener("click", () => {
-      this.backDrop();
-    });
+    this.backdrop.addEventListener("click", () => this.backDrop());
   }
   updateCartCount() {
-    const allCarts = Storage.getCarts();
     let tempCartItems = 0;
-    const totalPrice = allCarts.reduce((acc, curr) => {
+    const totalPrice = Storage.getCarts().reduce((acc, curr) => {
       tempCartItems += curr.quantity;
       return acc + curr.quantity * curr.price;
     }, 0);
@@ -38,10 +35,10 @@ class CartView {
     const isCart = Storage.getCarts().length;
     if (isCart) {
       if (!this.cartWrapper.classList.contains("hide-loading")) {
+        this.cartWrapper.classList.add("hide-loading");
         for (let i = 0; i < isCart; i++) {
           this.cartItems.append(this.cartItemTemplate.content.cloneNode(true));
         }
-        this.cartWrapper.classList.add("hide-loading");
         Api.getCartItems();
       } else {
         Api.getCartItems();
@@ -49,9 +46,8 @@ class CartView {
     }
   }
   showCartItems(cart) {
-    const allCarts = Storage.getCarts();
     this.cartItems.innerHTML = "";
-    allCarts.forEach((c) => {
+    Storage.getCarts().forEach((c) => {
       const res = cart.find((p) => p.id == c.id);
       const div = this.cartItemTemplate.content.cloneNode(true);
       div.querySelector(
@@ -70,11 +66,8 @@ class CartView {
     this.clearCart();
   }
   cartLogic() {
-    const cartItemController = document.querySelectorAll(
-      ".cart__item-controller"
-    );
     let cart = Storage.getCarts();
-    cartItemController.forEach((cic) => {
+    document.querySelectorAll(".cart__item-controller").forEach((cic) => {
       cic.addEventListener("click", (e) => {
         const res = cart.find((c) => c.id == cic.dataset.id);
         if (cic.classList.contains("up")) {
@@ -84,7 +77,6 @@ class CartView {
           Storage.saveCarts(cart);
           this.updateCartCount();
         } else if (cic.classList.contains("down")) {
-          const res = cart.find((c) => c.id == cic.dataset.id);
           if (res.quantity === 1) {
             Api.getCartItems();
             ProductView.updateProductBtn(res.id);
@@ -123,8 +115,7 @@ class CartView {
     });
   }
   clearCart() {
-    const clearCartBtn = document.getElementById("clear-cart-btn");
-    clearCartBtn.addEventListener("click", () => {
+    document.getElementById("clear-cart-btn").addEventListener("click", () => {
       const cart = Storage.getCarts();
       if (cart.length) {
         cart.forEach((c) => {
