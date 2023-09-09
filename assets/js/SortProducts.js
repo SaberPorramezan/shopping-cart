@@ -31,39 +31,37 @@ class SortProducts {
         //* Create options
         const option = document.createElement("DIV");
         option.innerHTML = select.options[i].innerHTML;
+
         option.addEventListener("click", (e) => {
+          let {
+            target: {
+              innerHTML,
+              classList,
+              parentNode: { previousSibling },
+            },
+          } = e;
           for (let i = 0; i < select.length; i++) {
-            if (select.options[i].innerHTML == e.target.innerHTML) {
+            if (select.options[i].innerHTML == innerHTML) {
               select.selectedIndex = i;
-              e.target.parentNode.previousSibling.innerHTML =
-                e.target.innerHTML;
+              previousSibling.innerHTML = innerHTML;
               const sameAsSelected =
                 document.querySelectorAll(".same-as-selected");
               for (let i = 0; i < sameAsSelected.length; i++) {
                 sameAsSelected[i].classList.remove("same-as-selected");
               }
-              e.target.classList.add("same-as-selected");
+              classList.add("same-as-selected");
             }
           }
           this.selectHide();
-          if (CategoryView.filteredDataForSearch.length) {
-            ProductView.showProducts(
-              this.sortProducts(
-                CategoryView.filteredDataForSearch,
-                e.target.innerHTML
-              )
-            );
-          } else {
-            ProductView.showProducts(
-              this.sortProducts(ProductView.productsData, e.target.innerHTML)
-            );
-          }
+          let sortData = CategoryView.filteredDataForSearch.length
+            ? CategoryView.filteredDataForSearch
+            : ProductView.productsData;
+          ProductView.showProducts(this.sortProducts(sortData, innerHTML));
         });
         selectItems.appendChild(option);
       }
       this.customSelect[i].appendChild(selectItems);
     }
-
     document
       .querySelector(".select-selected")
       .addEventListener("click", (e) => {

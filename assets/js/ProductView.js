@@ -21,12 +21,12 @@ class ProductView {
   }
   showProducts(products) {
     this.cards.innerHTML = "";
-    products.forEach((p) => {
+    products.forEach(({ image, title, price, id, rating: { rate, count } }) => {
       const div = this.cardTemplate.content.cloneNode(true);
-      div.querySelector(".card__title").textContent = p.title;
+      div.querySelector(".card__title").textContent = title;
       div.querySelector(
         ".card__header"
-      ).innerHTML = ` <img src="${p.image}"class="card__img" loading="lazy" />`;
+      ).innerHTML = ` <img src="${image}"class="card__img" loading="lazy" />`;
       div.querySelector(".rating").innerHTML = `<svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -45,14 +45,14 @@ class ProductView {
                   />
                 </svg>
                 <div class="">
-                  <span class="rate">${p.rating.rate}</span>
-                  <span class="count">(${p.rating.count})</span>
+                  <span class="rate">${rate}</span>
+                  <span class="count">(${count})</span>
                 </div>`;
-      div.querySelector(".card__price").textContent = `$ ${p.price}`;
-      div.querySelector(".card__price").setAttribute("data-id", p.id);
+      div.querySelector(".card__price").textContent = `$ ${price}`;
+      div.querySelector(".card__price").setAttribute("data-id", id);
       div.querySelector(
         ".card__footer-btns"
-      ).innerHTML = `<button class="btn btn--primary add-to-cart-btn" data-id=${p.id}>Add To Cart</button>`;
+      ).innerHTML = `<button class="btn btn--primary add-to-cart-btn" data-id=${id}>Add To Cart</button>`;
       this.cards.append(div);
     });
     this.addToCart();
@@ -65,16 +65,22 @@ class ProductView {
       }
       btn.addEventListener("click", (e) => {
         if (Storage.getCarts().length < this.cartLimit) {
+          let {
+            target: {
+              parentNode: { parentNode },
+              dataset: { id },
+            },
+          } = e;
           CartView.cartWrapper.classList.remove("hide-loading");
           e.target.innerText = "In Cart";
           e.target.disabled = true;
-          const price = e.target.parentNode.parentNode
+          const price = parentNode
             .querySelector(".card__price")
             .textContent.split(" ")[1];
           Storage.saveCarts([
             ...Storage.getCarts(),
             {
-              id: e.target.dataset.id,
+              id,
               price,
               quantity: 1,
             },
@@ -107,11 +113,11 @@ class ProductView {
     });
   }
   searchProducts(value) {
-    let searchData = this.productsData;
-    if (CategoryView.filteredDataForSearch.length)
-      searchData = CategoryView.filteredDataForSearch;
-    const searchResults = searchData.filter((p) =>
-      p.title.toLowerCase().includes(value.toLowerCase())
+    let searchData = CategoryView.filteredDataForSearch.length
+      ? CategoryView.filteredDataForSearch
+      : this.productsData;
+    const searchResults = searchData.filter(({ title }) =>
+      title.toLowerCase().includes(value.toLowerCase())
     );
     searchResults.length
       ? this.notFound.classList.add("hide")

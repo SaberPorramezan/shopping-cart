@@ -10,12 +10,10 @@ class CartView {
     // Cart
     this.cartWrapper = document.querySelector(".cart-wrapper");
     this.backdrop = document.querySelector(".backdrop");
-
     this.cartItems = document.querySelector(".cart__items");
     this.cartItemTemplate = document.getElementById("cart__item-template");
-
     this.cartTotalPrice = document.querySelector(".cart__total-price");
-
+    // Event
     this.cartCountItems.addEventListener("click", () => {
       this.showCart();
       this.showCartLoading();
@@ -47,40 +45,69 @@ class CartView {
   }
   showCartItems(cart) {
     this.cartItems.innerHTML = "";
-    Storage.getCarts().forEach((c) => {
-      const res = cart.find((p) => p.id == c.id);
+    Storage.getCarts().forEach(({ id: cId, quantity }) => {
+      const { image, title, price, id } = cart.find(({ id }) => id == cId);
       const div = this.cartItemTemplate.content.cloneNode(true);
       div.querySelector(
         ".cart__item-left"
-      ).innerHTML = `<img src="${res.image}" class="cart__item-img" loading="lazy" />`;
-      div.querySelector(".cart__item-title").textContent = res.title;
-      div.querySelector(".cart__item-price").textContent = `$ ${res.price}`;
-      div.querySelector(".cart__item-count").textContent = c.quantity;
-      div.querySelector(".cart__item-count").setAttribute("data-id", res.id);
-      div.querySelector(".up").setAttribute("data-id", res.id);
-      div.querySelector(".down").setAttribute("data-id", res.id);
-      div.querySelector(".delete").setAttribute("data-id", res.id);
+      ).innerHTML = `<img src="${image}" class="cart__item-img" loading="lazy" />`;
+      div.querySelector(".cart__item-title").textContent = title;
+      div.querySelector(".cart__item-price").textContent = `$ ${price}`;
+      div.querySelector(".cart__item-count").textContent = quantity;
+      div.querySelector(".cart__item-count").setAttribute("data-id", id);
+      div.querySelector(".up").setAttribute("data-id", id);
+      div.querySelector(".down").setAttribute("data-id", id);
+      div.querySelector(".delete").setAttribute("data-id", id);
       this.cartItems.append(div);
     });
     this.cartLogic();
     this.clearCart();
   }
   cartLogic() {
-    let cart = Storage.getCarts();
-    document.querySelectorAll(".cart__item-controller").forEach((cic) => {
-      cic.addEventListener("click", (e) => {
-        const res = cart.find((c) => c.id == cic.dataset.id);
-        if (cic.classList.contains("up")) {
-          res.quantity++;
-          cic.parentElement.querySelector(".cart__item-count").innerText =
-            res.quantity;
-          Storage.saveCarts(cart);
-          this.updateCartCount();
-        } else if (cic.classList.contains("down")) {
-          if (res.quantity === 1) {
+    document
+      .querySelectorAll(".cart__item-controller")
+      .forEach((cartItemController) => {
+        cartItemController.addEventListener("click", (e) => {
+          const {
+            classList,
+            parentElement,
+            dataset: { id: dataId },
+          } = cartItemController;
+          let cart = Storage.getCarts();
+          let res = cart.find(({ id }) => id == dataId);
+          const { id } = res;
+          if (classList.contains("up")) {
+            res.quantity++;
+            parentElement.querySelector(".cart__item-count").innerText =
+              res.quantity;
+            Storage.saveCarts(cart);
+            this.updateCartCount();
+            console.log(cart);
+          } else if (classList.contains("down")) {
+            if (res.quantity === 1) {
+              Api.getCartItems();
+              ProductView.updateProductBtn(id);
+              Storage.removeFromCart(id);
+              this.updateCartCount();
+              this.closeCart();
+              // Show Toast
+              Toastify({
+                text: "Removed from cart",
+                className: "warning",
+                gravity: "top",
+                position: "center",
+              }).showToast();
+            } else {
+              res.quantity--;
+              parentElement.querySelector(".cart__item-count").innerText =
+                res.quantity;
+              Storage.saveCarts(cart);
+              this.updateCartCount();
+            }
+          } else if (classList.contains("delete")) {
             Api.getCartItems();
-            ProductView.updateProductBtn(res.id);
-            Storage.removeFromCart(res.id);
+            ProductView.updateProductBtn(id);
+            Storage.removeFromCart(id);
             this.updateCartCount();
             this.closeCart();
             // Show Toast
@@ -90,37 +117,17 @@ class CartView {
               gravity: "top",
               position: "center",
             }).showToast();
-          } else {
-            res.quantity--;
-            cic.parentElement.querySelector(".cart__item-count").innerText =
-              res.quantity;
-            Storage.saveCarts(cart);
-            this.updateCartCount();
           }
-        } else if (cic.classList.contains("delete")) {
-          Api.getCartItems();
-          ProductView.updateProductBtn(res.id);
-          Storage.removeFromCart(res.id);
-          this.updateCartCount();
-          this.closeCart();
-          // Show Toast
-          Toastify({
-            text: "Removed from cart",
-            className: "warning",
-            gravity: "top",
-            position: "center",
-          }).showToast();
-        }
+        });
       });
-    });
   }
   clearCart() {
     document.getElementById("clear-cart-btn").addEventListener("click", () => {
       const cart = Storage.getCarts();
       if (cart.length) {
-        cart.forEach((c) => {
-          Storage.removeFromCart(c.id);
-          ProductView.updateProductBtn(c.id);
+        cart.forEach(({id}) => {
+          Storage.removeFromCart(id);
+          ProductView.updateProductBtn(id);
         });
         this.showCartItems();
         this.updateCartCount();

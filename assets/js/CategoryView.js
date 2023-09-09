@@ -14,28 +14,32 @@ class CategoryView {
   }
   showCategories(categories) {
     this.category.innerHTML = "";
-    categories.forEach((c) => {
+    categories.forEach((category) => {
       const div = this.categoryTemplate.content.cloneNode(true);
-      div.querySelector(".category-btn").textContent = c;
+      div.querySelector(".category-btn").textContent = category;
       this.category.append(div);
     });
+
     this.filterByCategory();
   }
   filterByCategory() {
     [...document.querySelectorAll(".category-btn")].forEach((btn) =>
-      btn.addEventListener("click", (e) => {
-        btn.classList.toggle("active");
+      btn.addEventListener("click", () => {
+        const { classList } = btn;
+        classList.toggle("active");
         let filteredData = [];
-        [...document.querySelectorAll(".category-btn")].forEach((btn) => {
-          if (btn.classList.contains("active")) {
-            const filtered = ProductView.productsData.filter(
-              (p) => p.category === btn.textContent
-            );
-            for (const item of filtered) {
-              filteredData.push(item);
+        [...document.querySelectorAll(".category-btn")].forEach(
+          ({ classList, textContent }) => {
+            if (classList.contains("active")) {
+              const filtered = ProductView.productsData.filter(
+                ({ category }) => category === textContent
+              );
+              for (const item of filtered) {
+                filteredData.push(item);
+              }
             }
           }
-        });
+        );
         const sameAsSelected = document.querySelector(".same-as-selected");
         if (sameAsSelected)
           SortProducts.sortProducts(filteredData, sameAsSelected.textContent);
