@@ -1,6 +1,8 @@
+import Api from "./Api.js";
 import Storage from "./Storage.js";
 import CartView from "./CartView.js";
 import CategoryView from "./CategoryView.js";
+import Toast from "./Toast.js";
 
 class ProductView {
   constructor() {
@@ -11,13 +13,14 @@ class ProductView {
     this.productsData = [];
     this.cartLimit = 5;
     this.searchInput.addEventListener("input", (e) =>
-      this.searchProducts(e.target.value)
+      this.#searchProducts(e.target.value)
     );
   }
   showProductsLoading() {
     for (let i = 0; i < 10; i++) {
       this.cards.append(this.cardTemplate.content.cloneNode(true));
     }
+    Api.getAllProducts();
   }
   showProducts(products) {
     this.cards.innerHTML = "";
@@ -55,9 +58,9 @@ class ProductView {
       ).innerHTML = `<button class="btn btn--primary add-to-cart-btn" data-id=${id}>Add To Cart</button>`;
       this.cards.append(div);
     });
-    this.addToCart();
+    this.#addToCart();
   }
-  addToCart() {
+  #addToCart() {
     document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
       if (Storage.getProduct(btn.dataset.id)) {
         btn.innerText = "In Cart";
@@ -86,20 +89,9 @@ class ProductView {
             },
           ]);
           CartView.updateCartCount();
-          // Show Toast
-          Toastify({
-            text: "Added to cart",
-            className: "success",
-            gravity: "top",
-            position: "center",
-          }).showToast();
+          Toast.show("Added to cart", "success");
         } else {
-          Toastify({
-            text: `You have ${this.cartLimit} uncompleted orders`,
-            className: "info",
-            gravity: "top",
-            position: "center",
-          }).showToast();
+          Toast.show(`You have ${this.cartLimit} uncompleted orders`, "info");
         }
       });
     });
@@ -112,7 +104,7 @@ class ProductView {
       }
     });
   }
-  searchProducts(value) {
+  #searchProducts(value) {
     let searchData = CategoryView.filteredDataForSearch.length
       ? CategoryView.filteredDataForSearch
       : this.productsData;

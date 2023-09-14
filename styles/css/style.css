@@ -521,6 +521,7 @@ svg {
 .cart__item-controllers .cart__item-controller .icon {
   width: 2.8rem;
   height: 2.8rem;
+  pointer-events: none;
 }
 .cart__item-controllers .cart__item-controller:first-child .icon {
   color: #9cd323;
@@ -566,6 +567,7 @@ svg {
   width: 2.4rem;
   height: 2.4rem;
   color: #ec4899;
+  pointer-events: none;
 }
 .cart__item-right:hover {
   background-color: #fce7f3;

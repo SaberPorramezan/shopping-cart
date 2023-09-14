@@ -1,6 +1,7 @@
 import Api from "./Api.js";
 import Storage from "./Storage.js";
 import ProductView from "./ProductView.js";
+import Toast from "./Toast.js";
 
 class CartView {
   constructor() {
@@ -15,10 +16,10 @@ class CartView {
     this.cartTotalPrice = document.querySelector(".cart__total-price");
     // Event
     this.cartCountItems.addEventListener("click", () => {
-      this.showCart();
+      this.#showCart();
       this.showCartLoading();
     });
-    this.backdrop.addEventListener("click", () => this.backDrop());
+    this.backdrop.addEventListener("click", () => this.#backDrop());
   }
   updateCartCount() {
     let tempCartItems = 0;
@@ -60,95 +61,84 @@ class CartView {
       div.querySelector(".delete").setAttribute("data-id", id);
       this.cartItems.append(div);
     });
-    this.cartLogic();
-    this.clearCart();
+    this.#cartController();
+    this.#clearCart();
   }
-  cartLogic() {
-    document
-      .querySelectorAll(".cart__item-controller")
-      .forEach((cartItemController) => {
-        cartItemController.addEventListener("click", (e) => {
-          const {
+  #cartController() {
+    document.querySelectorAll(".cart__item-controller").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const {
+          target: {
             classList,
-            parentElement,
-            dataset: { id: dataId },
-          } = cartItemController;
-          let cart = Storage.getCarts();
-          let res = cart.find(({ id }) => id == dataId);
-          const { id } = res;
-          if (classList.contains("up")) {
-            res.quantity++;
-            parentElement.querySelector(".cart__item-count").innerText =
-              res.quantity;
-            Storage.saveCarts(cart);
-            this.updateCartCount();
-            console.log(cart);
-          } else if (classList.contains("down")) {
-            if (res.quantity === 1) {
-              Api.getCartItems();
-              ProductView.updateProductBtn(id);
-              Storage.removeFromCart(id);
-              this.updateCartCount();
-              this.closeCart();
-              // Show Toast
-              Toastify({
-                text: "Removed from cart",
-                className: "warning",
-                gravity: "top",
-                position: "center",
-              }).showToast();
-            } else {
-              res.quantity--;
-              parentElement.querySelector(".cart__item-count").innerText =
-                res.quantity;
-              Storage.saveCarts(cart);
-              this.updateCartCount();
-            }
-          } else if (classList.contains("delete")) {
-            Api.getCartItems();
-            ProductView.updateProductBtn(id);
-            Storage.removeFromCart(id);
-            this.updateCartCount();
-            this.closeCart();
-            // Show Toast
-            Toastify({
-              text: "Removed from cart",
-              className: "warning",
-              gravity: "top",
-              position: "center",
-            }).showToast();
+            dataset: { id },
+          },
+        } = e;
+        if (classList.contains("up")) {
+          this.#cartProcessing(id, this.#up);
+        } else if (classList.contains("down")) {
+          const { quantity } = Storage.getCarts().find(
+            ({ id: pId }) => pId == id
+          );
+          if (quantity > 1) {
+            this.#cartProcessing(id, this.#down);
+          } else {
+            this.#deleteFormCart(id);
+            Toast.show("Removed from cart", "warning");
           }
-        });
+        } else {
+          this.#deleteFormCart(id);
+          Toast.show("Removed from cart", "warning");
+        }
       });
+    });
   }
-  clearCart() {
+  #cartProcessing(dataId, operation) {
+    let cart = Storage.getCarts();
+    let res = cart.find(({ id }) => id == dataId);
+    res.quantity = operation(res.quantity);
+    document.querySelectorAll(".cart__item-count").forEach((item) => {
+      if (item.dataset.id === dataId) {
+        item.innerText = res.quantity;
+      }
+    });
+    Storage.saveCarts(cart);
+    this.updateCartCount();
+  }
+  #up(quantity) {
+    return quantity + 1;
+  }
+  #down(quantity) {
+    return quantity - 1;
+  }
+  #deleteFormCart(id) {
+    Api.getCartItems();
+    ProductView.updateProductBtn(id);
+    Storage.removeFromCart(id);
+    this.updateCartCount();
+    this.#closeCart();
+  }
+  #clearCart() {
     document.getElementById("clear-cart-btn").addEventListener("click", () => {
       const cart = Storage.getCarts();
       if (cart.length) {
-        cart.forEach(({id}) => {
+        cart.forEach(({ id }) => {
           Storage.removeFromCart(id);
           ProductView.updateProductBtn(id);
         });
         this.showCartItems();
         this.updateCartCount();
-        this.closeCart();
-        // Show Toast
-        Toastify({
-          text: "The cart has been removed",
-          className: "warning",
-          gravity: "top",
-          position: "center",
-        }).showToast();
+        this.#closeCart();
+        Toast.show("The cart has been removed", "warning");
       }
     });
   }
-  showCart() {
+  #showCart() {
     if (Storage.getCarts().length) this.cartWrapper.classList.remove("hide");
   }
-  closeCart() {
+  #closeCart() {
     if (!Storage.getCarts().length) this.cartWrapper.classList.add("hide");
   }
-  backDrop() {
+  #backDrop() {
     this.cartWrapper.classList.add("hide");
   }
 }

@@ -442,6 +442,7 @@ svg {
     .icon {
       width: 2.8rem;
       height: 2.8rem;
+      pointer-events: none;
     }
     &:first-child {
       .icon {
@@ -487,6 +488,7 @@ svg {
     width: 2.4rem;
     height: 2.4rem;
     color: $errorColorDefault;
+    pointer-events: none;
   }
   &:hover {
     background-color: $errorColorLight100;

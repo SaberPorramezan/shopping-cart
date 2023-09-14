@@ -6,15 +6,27 @@ class SortProducts {
     this.customSelect = document.getElementsByClassName("custom-select");
   }
   sortProducts(products, value) {
-    if (value === "Price: Low to High") {
-      return products.sort((a, b) => a.price - b.price);
-    } else if (value === "Price: High to Low") {
-      return products.sort((a, b) => b.price - a.price);
-    } else if (value === "Most Popular") {
-      return products.sort((a, b) => b.rating.rate - a.rating.rate);
+    if (value === "Price: Low to High")
+      this.#sortProcessing(products, this.#asc);
+    if (value === "Price: High to Low")
+      this.#sortProcessing(products, this.#desc);
+    if (value === "Most Popular")
+      this.#sortProcessing(products, this.#desc, true);
+
+    return products;
+  }
+  #sortProcessing(products, operation, other = false) {
+    if (!other) {
+      return products.sort((a, b) => operation(a.price, b.price));
     } else {
-      return products;
+      return products.sort((a, b) => operation(a.rating.rate, b.rating.rate));
     }
+  }
+  #asc(a, b) {
+    return a - b;
+  }
+  #desc(a, b) {
+    return b - a;
   }
   customSelectSetup() {
     for (let i = 0; i < this.customSelect.length; i++) {
@@ -52,7 +64,7 @@ class SortProducts {
               classList.add("same-as-selected");
             }
           }
-          this.selectHide();
+          this.#selectHide();
           let sortData = CategoryView.filteredDataForSearch.length
             ? CategoryView.filteredDataForSearch
             : ProductView.productsData;
@@ -66,10 +78,10 @@ class SortProducts {
       .querySelector(".select-selected")
       .addEventListener("click", (e) => {
         e.stopPropagation();
-        this.selectHide();
+        this.#selectHide();
       });
   }
-  selectHide() {
+  #selectHide() {
     document.querySelector(".select-items").classList.toggle("select-hide");
   }
 }

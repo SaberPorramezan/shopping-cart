@@ -1,3 +1,4 @@
+import Api from "./Api.js";
 import ProductView from "./ProductView.js";
 import SortProducts from "./SortProducts.js";
 
@@ -11,6 +12,7 @@ class CategoryView {
     for (let i = 0; i < 4; i++) {
       this.category.append(this.categoryTemplate.content.cloneNode(true));
     }
+    Api.getAllCategories();
   }
   showCategories(categories) {
     this.category.innerHTML = "";
@@ -20,9 +22,9 @@ class CategoryView {
       this.category.append(div);
     });
 
-    this.filterByCategory();
+    this.#filterByCategory();
   }
-  filterByCategory() {
+  #filterByCategory() {
     [...document.querySelectorAll(".category-btn")].forEach((btn) =>
       btn.addEventListener("click", () => {
         const { classList } = btn;
