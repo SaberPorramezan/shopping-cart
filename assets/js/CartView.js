@@ -49,6 +49,7 @@ class CartView {
     Storage.getCarts().forEach(({ id: cId, quantity }) => {
       const { image, title, price, id } = cart.find(({ id }) => id == cId);
       const div = this.cartItemTemplate.content.cloneNode(true);
+      div.querySelector(".cart__item").setAttribute("data-id", id);
       div.querySelector(
         ".cart__item-left"
       ).innerHTML = `<img src="${image}" class="cart__item-img" loading="lazy" />`;
@@ -111,7 +112,9 @@ class CartView {
     return quantity - 1;
   }
   #deleteFormCart(id) {
-    Api.getCartItems();
+    document.querySelectorAll(".cart__item").forEach((item) => {
+      if (item.dataset.id === id) item.remove();
+    });
     ProductView.updateProductBtn(id);
     Storage.removeFromCart(id);
     this.updateCartCount();
