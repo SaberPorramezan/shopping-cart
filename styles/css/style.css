@@ -451,7 +451,7 @@ svg {
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
   width: 100%;
   height: 10rem;
@@ -463,10 +463,12 @@ svg {
   justify-content: center;
   flex-direction: row;
   height: 100%;
+  width: 7.5rem;
 }
 .cart__item-left .cart__item-img {
-  width: 8rem;
+  width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .cart__item-center {
@@ -611,7 +613,7 @@ svg {
     height: 13rem;
     gap: 2rem;
   }
-  .cart__item-left .cart__item-img {
+  .cart__item-left {
     width: 10rem;
   }
   .cart__item-center {
@@ -742,15 +744,17 @@ svg {
 }
 
 .card__header {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
+  width: 90%;
+  height: 200px;
 }
 .card__header .card__img {
-  width: 70%;
-  height: 200px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .card__body {
