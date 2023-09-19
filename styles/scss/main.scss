@@ -266,14 +266,12 @@ svg {
 //* Logo Start
 .logo {
   h1 {
-    @include textStyle($fontSizeLG, 700, 180%, $neutralColorBlack);
-  }
-}
-@include media(SM) {
-  .logo {
-    h1 {
-      font-size: 2.4rem;
-    }
+    @include textStyle(
+      clamp(1.8rem, 2.5vw, 2.4rem),
+      700,
+      180%,
+      $neutralColorBlack
+    );
   }
 }
 //* Logo End
@@ -585,22 +583,21 @@ svg {
   margin-top: 5rem;
   width: 90vw;
 }
-.category {
+.categories {
   @include flex(center, center, row) {
     gap: 1rem;
     flex-wrap: wrap;
   }
   width: 100%;
+  min-height: 4.5rem;
   .category-btn {
     padding: 0.5rem 1rem;
     min-width: 8rem;
-    width: auto;
     min-height: 3rem;
-    height: auto;
     &:has(.skeleton) {
-      width: 10rem;
-      height: 4rem;
       border: none;
+      width: 12rem;
+      height: 4.5rem;
       background-color: $neutralColorWhite;
     }
   }

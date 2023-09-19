@@ -295,17 +295,12 @@ svg {
   }
 }
 .logo h1 {
-  font-size: 18px;
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
   font-weight: 700;
   line-height: 180%;
   color: #171f26;
 }
 
-@media (min-width: 640px) {
-  .logo h1 {
-    font-size: 2.4rem;
-  }
-}
 .header {
   display: flex;
   align-items: center;
@@ -671,7 +666,7 @@ svg {
   width: 90vw;
 }
 
-.category {
+.categories {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -679,18 +674,17 @@ svg {
   gap: 1rem;
   flex-wrap: wrap;
   width: 100%;
+  min-height: 4.5rem;
 }
-.category .category-btn {
+.categories .category-btn {
   padding: 0.5rem 1rem;
   min-width: 8rem;
-  width: auto;
   min-height: 3rem;
-  height: auto;
 }
-.category .category-btn:has(.skeleton) {
-  width: 10rem;
-  height: 4rem;
+.categories .category-btn:has(.skeleton) {
   border: none;
+  width: 12rem;
+  height: 4.5rem;
   background-color: #ffffff;
 }
 

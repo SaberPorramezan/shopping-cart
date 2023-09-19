@@ -4,24 +4,23 @@ import SortProducts from "./SortProducts.js";
 
 class CategoryView {
   constructor() {
-    this.category = document.querySelector(".category");
+    this.categories = document.querySelector(".categories");
     this.categoryTemplate = document.getElementById("category-template");
     this.filteredDataForSearch = [];
   }
   showCategoriesLoading() {
     for (let i = 0; i < 4; i++) {
-      this.category.append(this.categoryTemplate.content.cloneNode(true));
+      this.categories.append(this.categoryTemplate.content.cloneNode(true));
     }
     Api.getAllCategories();
   }
-  showCategories(categories) {
-    this.category.innerHTML = "";
-    categories.forEach((category) => {
+  showCategories(categoriesData) {
+    this.categories.innerHTML = "";
+    categoriesData.forEach((c) => {
       const div = this.categoryTemplate.content.cloneNode(true);
-      div.querySelector(".category-btn").textContent = category;
-      this.category.append(div);
+      div.querySelector(".category-btn").textContent = c;
+      this.categories.append(div);
     });
-
     this.#filterByCategory();
   }
   #filterByCategory() {
